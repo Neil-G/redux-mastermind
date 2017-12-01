@@ -20,7 +20,8 @@
     "tape": "^4.8.0"
   },
   "scripts": {
-    "test": "node ./test/index.js | tap-spec"
+    "test": "node ./test/index.js | tap-spec",
+    "build": "babel ./src -d ./lib -w"
   },
   "repository": {
     "type": "git",
