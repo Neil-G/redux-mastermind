@@ -1,0 +1,23 @@
+{
+  "name": "redux-mastermind",
+  "version": "0.0.0",
+  "description": "Clean State Management for Your Redux Store",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Neil-G/Redux-Mastermind.git"
+  },
+  "keywords": [
+    "Redux",
+    "Immutable"
+  ],
+  "author": "neil-g",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Neil-G/Redux-Mastermind/issues"
+  },
+  "homepage": "https://github.com/Neil-G/Redux-Mastermind#readme"
+}

@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>App Updater Docs</title>
+
+    <!-- JQuery -->
+    <script
+  src="https://code.jquery.com/jquery-3.2.1.min.js"
+  integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
+  crossorigin="anonymous"></script>
+
+    <!-- Semantic UI -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.10/semantic.css" />
+
+    <!-- Prism -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.8.4/themes/prism-solarizedlight.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.8.4/plugins/line-numbers/prism-line-numbers.css" />
+
+    <!-- Font Awesome -->
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="index.css" />
+
+    <!-- navigation function -->
+    <script>
+      function gracefulNavigation( wrapperEl, pathname,) {
+        wrapperEl = wrapperEl || document.body
+          pathname = pathname || '/'
+        var wrappingContainer = document.getElementById(wrapperEl)
+        wrappingContainer.style.opacity = 0;
+        setTimeout(function(){
+          window.location.assign(pathname)
+        }, 400)
+      }
+    </script>
+    
+  </head>
+  <body>
+
+    <!-- Landing Page Container -->
+    <div class="landing-main-container transition-wrapper_page" id="landing-main-container">
+        <div class="branches_landing-container">
+          <img src="brain.png" class="landing" />
+        </div>
+        <h1 class="main-header"> Redux Mastermind</h1>
+
+        <h3 class="main-subheader"> Clean State Management for your Redux Store </h3>
+        
+        <!-- Top Nav Link -->
+        <div class="ui dropdown">
+        </div>
+        <nav class="nav-link-container">
+
+            <!-- Introduction Nav Options -->
+          <div class="ui dropdown">
+            <div class="text nav-link"> INTRO </div>
+            <i class="dropdown icon"></i>
+            <div class="menu">
+              <div class="item" onclick="gracefulNavigation('landing-main-container', '/introduction/motivation')">
+                Motivation
+              </div>
+              <div class="item" onclick="gracefulNavigation('landing-main-container', '/introduction/getting-started')">Getting Started</div>
+              <div class="item">Usage</div>
+              <div class="item">How it Works</div>
+            </div>
+          </div>
+
+
+          <!-- Docs Nav Options -->
+          <div class="ui dropdown">
+            <div class="text nav-link"> DOCS </div>
+            <i class="dropdown icon"></i>
+            <div class="menu">
+              <div class="item"> Options and Configuration </div>
+              <div class="item" onclick="gracefulNavigation('landing-main-container', '/docs/api')"> The API </div>
+              <div class="item"> Under The Hood </div>
+              <div class="item"> Extensions </div>
+            </div>
+          </div>
+
+          <!-- Example Nav Options -->
+          <div class="ui dropdown">
+            <div class="text nav-link"> EXAMPLES </div>
+            <i class="dropdown icon"></i>
+            <div class="menu">
+              <div class="item"> Todo (sync) </div>
+              <div class="item"> Todo (async) </div>
+              <div class="item"> Data Fetching Recipes </div>
+
+            </div>
+          </div>
+
+        </nav>
+
+        <!-- Bullet Points -->
+        <div class="intro-bullet-points">
+            <div class="list-wrapper">
+              <ul>
+                <li>The core concepts are Transparency and Simplicity</li>
+                <li>The library is Flexible, Light, and Extensible</li>
+                <li>The docs stay up to date 🙏</li>
+              </ul>
+            </div>
+        </div>
+
+        <!-- Why You Should Use It -->
+        <h3 class="why"> And Here's Why You Should Use It... </h3>
+
+        <!-- Selling Points -->
+        <div class=selling-points>
+
+          <!-- Transparency Selling Point -->
+          <div class="selling-point">
+            <div class="text">
+
+              <h5 class=title-icon>
+                <i class="fa fa-eye" aria-hidden="true"></i>
+              </h5>
+
+              <h5 class=title-text>Transparency of all UI Events</h5>
+
+              <p class="body">
+                In most applications, to see how a single UI event works, you have to look through several files spread out over several folders. This makes maintaining and reasoning about your application tedious and difficult very quickly.  Redux Mastermind lets you define every aspect of an interaction, from start to finish, in a single place.
+              </p>
+              <p class='tldr-header'> tldr </p>
+              <p class="tldr-body">
+                <span class="problem">Problem:</span> interactions spread out over many files and folder.  Hard to maintain, hard to reason about.
+              </p>
+              <p class="tldr-body"> 
+                <span class="solution">Solution:</span> interactions defined in a single place from start to finish, using expressive and descriptive language. Easy to understand, easy to maintain.
+              </p>
+            </div>
+            <div class="code-container">
+              <pre>
+                <code class="language-jsx">
+// example updateSchema creation function 
+// (aka an updateSchemaCreator)
+function createAndCompleteATodo (id, title, text) {
+  const todo = { 
+    id: id,
+    title: title, 
+    body: text,
+    complete: false 
+  }
+  return {
+    description: 'logs a user in with a username and password',
+    updater: 'store',
+    actions: {
+      createTodo: {
+        description: 'creates a single todo',
+        branch: 'todos',
+        location: ['data', id],
+        operation: 'setIn',
+        value: todo,
+      },
+      completeTodo: {
+        description: 'makes a todo complete status true',
+        branch: 'todos',
+        location: ['data', id],
+        updateIn: function ({}, value) {
+          value = value.toJS()
+          value.complete = true
+          return value 
+        },
+        uiEventFunction: function ({ alertify }) {
+          return alertify.success('Congratulations on completing an event!')
+        } 
+      }
+    }
+  }
+}
+                </code>
+              </pre>
+            </div>  
+          </div>
+
+
+
+
+          <p>
+          </p>
+    </div>
+
+  </body>
+
+    
+      <!-- Prism -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.8.4/prism.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.8.4/plugins/line-numbers/prism-line-numbers.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.8.4/components/prism-javascript.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.8.4/components/prism-jsx.js"></script>
+
+    <!-- Semantic UI -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.13/semantic.js"></script>
+
+    <script>
+      $('.ui.dropdown').hover(
+        $('.ui.dropdown')
+          .dropdown()
+      )
+      ;
+    </script>
+</html>
+

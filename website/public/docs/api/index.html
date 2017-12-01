@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>App Updater Docs</title>
+
+    <!-- JQuery -->
+    <script
+  src="https://code.jquery.com/jquery-3.2.1.min.js"
+  integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
+  crossorigin="anonymous"></script>
+
+    <!-- Semantic UI -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.10/semantic.css" />
+
+    <!-- Prism -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.8.4/themes/prism-solarizedlight.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.8.4/plugins/line-numbers/prism-line-numbers.css" />
+
+    <!-- Font Awesome -->
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="../../index.css" />
+
+    <!-- navigation function -->
+    <script>
+      function gracefulNavigation( wrapperEl, pathname,) {
+        wrapperEl = wrapperEl || document.body
+          pathname = pathname || '/'
+        var wrappingContainer = document.getElementById(wrapperEl)
+        wrappingContainer.style.opacity = 0;
+        setTimeout(function(){
+          window.location.assign(pathname)
+        }, 400)
+      }
+    </script>
+    
+  </head>
+
+  <body>
+  	<!-- Side Nav -->
+    <div id='side-nav' class="ui vertical menu">
+      <div class="item"> 
+      	<div class="header" onclick="gracefulNavigation('main-container_api', '/')">
+      		MASTERMIND
+      	</div>
+      </div>
+     	<div class="item">
+      	<div class="header" onclick="gracefulNavigation('main-container_api', '/')">
+      		
+      	</div>
+      </div>
+      <div class="item">
+        <div class="header">THE API</div>
+        <div class="menu">
+          <a class="item">Motivation</a>
+          <a class="item">Getting Started</a>
+          <a class="item">Usage</a>
+          <a class="item">How it Works</a>
+        </div>
+      </div>
+      <div class="item">
+        <div class="header">How it Works (Docs)</div>
+        <div class="menu">
+          <a class="item">reducers</a>
+          <a class="item" data-tooltip="Add users to your feed">
+
+            updateApp
+          </a>
+          <a class="item">updateSchemas</a>
+          <a class="item">updaters</a>
+          <a class="item">actions & actionGroups</a>
+        </div>
+      </div>
+      <div class="item">
+        <div class="header">Examples</div>
+        <div class="menu">
+          <a class="item" href="#todo-no-async">Todo (sync/async)</a>
+          <a class="item" href="#todo-no-async">eager updating</a>
+          <a class="item" href="#todo-no-async">fetching status</a>
+          <a class="item" href="#todo-no-async">cookbook</a>
+          <a class="item" href="#todo-no-async">ui events</a>
+
+        </div>
+      </div>
+    </div>
+
+  	<div id="main-container_api" class="transition-wrapper_page">
+  		<!-- Motivation -->
+  		The API
+
+  	</div>
+  </body>
+
+</html>
