@@ -6,9 +6,10 @@ const combineReducers = require('redux').combineReducers
 var test = require('tape');
 var tapSpec = require('tap-spec');
 const I = require('immutable')
+const util = require('util')
 
 test('quick start test', function (t) {
-    t.plan(8);
+    t.plan(10);
     
 	t.equal(
 		typeof configureReducers, 
@@ -79,7 +80,49 @@ test('quick start test', function (t) {
 		'built-in genericStoreUpdate updateSchemaCreator is initialized with createMastermind and updates the store properly'
 	)
 
-	// TODO: test genericApiUpdate
+	// test updateFunction
+	mastermind('genericStoreUpdate', {
+		actions: {
+			completeTodo: {
+				branch: 'testBranch_1',
+				location: ['todos', 'randomId'],
+				operation: 'updateIn',
+				updateFunction: function ({ fromJS }, value) {
+					let todo = value.toJS()
+					util.inspect(todo, { showHidden: true, depth: null })
+					todo.complete = true
+					return fromJS(todo)
+				}
+
+			}
+		}
+	})
+
+
+	t.ok(store.getState().testBranch_1.toJS().todos.randomId.complete,
+		'updateFunction works correctly'
+	)
+
+	// test locationFunction
+	mastermind('genericStoreUpdate', {
+		actions: {
+			uncompleteTodo: {
+				branch: 'testBranch_1',
+				locationFunction: function() {
+					return ['todos', 'randomId', 'complete']
+				},
+				operation: 'setIn',
+				value: false
+
+			}
+		}
+	})
+
+	console.log(store.getState().testBranch_1.toJS().todos.randomId.complete)
+
+	t.ok(!store.getState().testBranch_1.toJS().todos.randomId.complete,
+		'locationFunction works correctly'
+	)
 
     
 });
