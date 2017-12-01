@@ -12,7 +12,9 @@
   },
   "devDependencies": {
     "babel-cli": "^6.26.0",
+    "babel-eslint": "^8.0.3",
     "babel-preset-env": "^1.6.1",
+    "eslint": "^4.12.1",
     "npm": "^5.5.1",
     "redux": "^3.7.2",
     "tap": "^11.0.0",
@@ -21,7 +23,8 @@
   },
   "scripts": {
     "test": "node ./test/index.js | tap-spec",
-    "build": "babel ./src -d ./lib -w"
+    "build": "babel ./src -d ./lib -w",
+    "lint": "eslint ./src/*.js*"
   },
   "repository": {
     "type": "git",
