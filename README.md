@@ -90,6 +90,10 @@ console.log(store.getState())
 ```
 
 
+That's all you need to get started, and to go quite a long way even,
+but you can find out more at the [Redux Mastermind website](https://redux-mastermind.firebaseapp.com/)
+
+
 
 
 
