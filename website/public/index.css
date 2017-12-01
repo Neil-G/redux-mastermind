@@ -288,7 +288,7 @@ img.landing {
 /* Selling Points */
 
 .selling-points {
-	max-width: 1020px;
+	max-width: 1350px;
 	margin: 80px auto 0;
 }
 
@@ -298,8 +298,9 @@ img.landing {
 }
 
 .selling-point > .text {
-	width: 50%;
-	margin: 0 auto;
+	width: 45%;
+	margin: 20px 0 0 auto;
+	padding: 0 20px 0 90px;
 }
 
 .selling-point > .text > .title-icon {
@@ -321,7 +322,7 @@ img.landing {
 
 
 .selling-point > .code-container {
-	width: 50%;
+	width: 55%;
 	margin: 20px auto 0;
 	background: white;
 	// border: none;
@@ -359,10 +360,12 @@ img.landing {
 	}
 
 	.selling-point > .text {
-		margin-top: 20px;
+		// margin-right: 0;
+		margin: 20px auto;
+		padding-left: 0;
+		width: 80%;
 	}
 
-	.selling-point > .text,
 	.selling-point > .code-container {
 		width: 88%;
 	} 
