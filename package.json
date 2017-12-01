@@ -22,9 +22,9 @@
     "tape": "^4.8.0"
   },
   "scripts": {
-    "test": "node ./test/index.js | tap-spec -w",
+    "test": "node ./test/index.js | tap-spec",
     "build": "babel ./src -d ./lib -w",
-    "lint": "eslint ./src/*.js* -w"
+    "lint": "eslint ./src/*.js*"
   },
   "repository": {
     "type": "git",
