@@ -56,12 +56,12 @@ test('quick start test', function (t) {
 
 	t.equal(
 		typeof mastermind,
-		'function',
+		'object',
 		'createMastermind creates a mastermind function'
 	)
 
 	// test mastermind default capabilites
-	mastermind('genericStoreUpdate', {
+	mastermind.update('genericStoreUpdate', {
 		actions: {
 			createTodo: {
 				branch: 'testBranch_1',
@@ -81,7 +81,7 @@ test('quick start test', function (t) {
 	)
 
 	// test updateFunction
-	mastermind('genericStoreUpdate', {
+	mastermind.update('genericStoreUpdate', {
 		actions: {
 			completeTodo: {
 				branch: 'testBranch_1',
@@ -104,7 +104,7 @@ test('quick start test', function (t) {
 	)
 
 	// test locationFunction
-	mastermind('genericStoreUpdate', {
+	mastermind.update('genericStoreUpdate', {
 		actions: {
 			uncompleteTodo: {
 				branch: 'testBranch_1',

@@ -1,7 +1,8 @@
 import createUpdaterParts from './createUpdaterParts'
 import createUpdaters from './createUpdaters'
 import configureFirebase from './configureFirebase'
-// import alertify from 'alertify.js'
+import Docs from './Docs'
+import alertify from 'alertify.js'
 // import swal from 'sweetalert';
 
 // TODO, add reduxConfig as an option to validate branches
@@ -40,49 +41,54 @@ export default ({ store, updateSchemaCreators = {}, firebaseConfig }) => {
 	const firebase = firebaseConfig ? configureFirebase(firebaseConfig) : undefined
 
 	// create mastermind infrastructure
-	const updaterParts = createUpdaterParts({ store })
+	const updaterParts = createUpdaterParts({ store, alertify })
 	const updaters = createUpdaters({ updaterParts, firebase })
 
 
-	return (updateSchemaName, updateArgs) => {
+	return {
 
-		// check that user provides required name field
-		if (!updateSchemaName) {
-			console.log('must specify an update name') 
-			return
-		}
+		update: (updateSchemaName, updateArgs) => {
 
-		// check that updateSchemaCreator is an object, if not throw TypeError
-		if ( typeof updateSchemaName != 'string' ) {
-			throw new TypeError('updateSchemaName must be a string', 'createMastermind.js', 49)
-		}
+			// check that user provides required name field
+			if (!updateSchemaName) {
+				console.log('must specify an update name') 
+				return
+			}
+
+			// check that updateSchemaCreator is an object, if not throw TypeError
+			if ( typeof updateSchemaName != 'string' ) {
+				throw new TypeError('updateSchemaName must be a string', 'createMastermind.js', 49)
+			}
 
 
-		// check that user provides valid name
-		if (!updateSchemaCreators[updateSchemaName]) {
-			console.log('must provide a valid name')
-			// fuzzy search possible names and give suggestion along with list of valid instructions
-			return
-		}
+			// check that user provides valid name
+			if (!updateSchemaCreators[updateSchemaName]) {
+				console.log('must provide a valid name')
+				// fuzzy search possible names and give suggestion along with list of valid instructions
+				return
+			}
 
-		// create update schema
-		const updateSchema = updateSchemaCreators[updateSchemaName](updateArgs)
-		const { type } = updateSchema
+			// create update schema
+			const updateSchema = updateSchemaCreators[updateSchemaName](updateArgs)
+			const { type } = updateSchema
 
-		// check that user provides required type field
-		if (!type) {
-			console.log('every updateSchema must specify a type') 
-			return
-		}
+			// check that user provides required type field
+			if (!type) {
+				console.log('every updateSchema must specify a type') 
+				return
+			}
 
-		// check that user provides valid processor type
-		if (!updaters[type]) {
-			console.log('must provide a updater')
-			// fuzzy search possible type and give suggestion alongwith list of valid instructions
-			return
-		}
+			// check that user provides valid processor type
+			if (!updaters[type]) {
+				console.log('must provide a updater')
+				// fuzzy search possible type and give suggestion alongwith list of valid instructions
+				return
+			}
 
-		// log information about update
-		return updaters[type](updateSchema)
+			// log information about update
+			return updaters[type](updateSchema)
+		},
+		createDocs: () => Docs({ updateSchemasCreators, actionCreators }),
+		
 	}
 }
