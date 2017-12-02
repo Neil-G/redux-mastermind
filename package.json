@@ -8,11 +8,15 @@
     "axios": "^0.17.1",
     "firebase": "^4.7.0",
     "immutable": "^3.8.2",
+    "react": "^16.2.0",
     "sweetalert": "^2.0.8"
   },
   "devDependencies": {
     "babel-cli": "^6.26.0",
+    "babel-plugin-transform-react-jsx": "^6.24.1",
     "babel-preset-env": "^1.6.1",
+    "babel-preset-react": "^6.24.1",
+    "jsdom": "^11.5.1",
     "npm": "^5.5.1",
     "redux": "^3.7.2",
     "tap": "^11.0.0",
@@ -20,7 +24,7 @@
     "tape": "^4.8.0"
   },
   "scripts": {
-    "test": "node ./test/index.js | tap-spec",
+    "test": "tape -r ./test/helper.js ./test/index.js | tap-spec",
     "build": "babel ./src -d ./lib -w"
   },
   "repository": {
