@@ -2,7 +2,7 @@ import createUpdaterParts from './createUpdaterParts'
 import createUpdaters from './createUpdaters'
 import configureFirebase from './configureFirebase'
 import Docs from './Docs'
-import alertify from 'alertify.js'
+// import alertify from 'alertify.js'
 // import swal from 'sweetalert';
 
 // TODO, add reduxConfig as an option to validate branches
@@ -41,7 +41,7 @@ export default ({ store, updateSchemaCreators = {}, firebaseConfig }) => {
 	const firebase = firebaseConfig ? configureFirebase(firebaseConfig) : undefined
 
 	// create mastermind infrastructure
-	const updaterParts = createUpdaterParts({ store, alertify })
+	const updaterParts = createUpdaterParts({ store })
 	const updaters = createUpdaters({ updaterParts, firebase })
 
 
