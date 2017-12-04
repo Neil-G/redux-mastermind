@@ -9,7 +9,7 @@ const I = require('immutable')
 const util = require('util')
 
 test('quick start test', function (t) {
-    t.plan(10);
+    t.plan(11);
     
 	t.equal(
 		typeof configureReducers, 
@@ -52,12 +52,12 @@ test('quick start test', function (t) {
 		'configuredReducers sets the default store state from given config' 
 	)
 
-	const mastermind = createMastermind({ store })
+	const mastermind = createMastermind({ store, updateSchemaCreators: testData.updaateSchemaCreators })
 
 	t.equal(
 		typeof mastermind,
 		'object',
-		'createMastermind creates a mastermind function'
+		'createMastermind creates a mastermind object'
 	)
 
 	// test mastermind default capabilites
@@ -100,7 +100,7 @@ test('quick start test', function (t) {
 
 
 	t.ok(store.getState().testBranch_1.toJS().todos.randomId.complete,
-		'updateFunction works correctly'
+		'updateIn and updateFunction work correctly'
 	)
 
 	// test locationFunction
@@ -118,13 +118,18 @@ test('quick start test', function (t) {
 		}
 	})
 
-	console.log(store.getState().testBranch_1.toJS().todos.randomId.complete)
 
 	t.ok(!store.getState().testBranch_1.toJS().todos.randomId.complete,
 		'locationFunction works correctly'
 	)
 
-    
+	// test deleting using custom updateSchemaCreator
+	mastermind.update('deleteTodo', 'randomId')
+
+	t.ok(!store.getState().testBranch_1.toJS().todos.randomId,
+		'custom updateSchemaCreator works'
+	)
+
 });
 
 
