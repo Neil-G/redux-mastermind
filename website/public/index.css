@@ -142,9 +142,9 @@ img.landing {
 	display: block;
 	margin: auto;
 	transition: 6s all ease;
-	animation-name: brain-pulsate;
-	animation-duration: 6s;
-	animation-iteration-count: infinite;
+	// animation-name: brain-pulsate;
+	// animation-duration: 6s;
+	// animation-iteration-count: infinite;
 }
 
 @keyframes brain-pulsate {
