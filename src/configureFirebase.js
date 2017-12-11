@@ -11,6 +11,5 @@ export default (firebaseConfig) => {
 		auth: app.auth(),
 	    firebase: app.database(),
 	    firestore: app.firestore(),
-	    firestoreRefs: createFirestoreRefs(app.firestore())
 	}
 }

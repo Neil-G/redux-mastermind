@@ -22,7 +22,7 @@ function createReducer (branchName, defaultState = {}) {
 
 
 export default (reducersConfig) => {
-    
+
     let configuredReducers = {}
 
     Object.keys(reducersConfig).forEach((reducerName) => {

@@ -6,12 +6,12 @@ export default ({ updaterParts, firebase }) => {
 
 	return {
 
-		// dipsatches actions straight to the store 
+		// dipsatches actions straight to the store
 		store: (instructions) => {
 
 			// process actions
 			processActionGroup({ actionGroup: instructions.actions })
-		
+
 		},
 
 		// makes an api call using axios
@@ -28,7 +28,7 @@ export default ({ updaterParts, firebase }) => {
 
 					// process success actions
 					processActionGroup({ res, actionGroup: successActions })
-					
+
 					return res
 
 				})
@@ -36,13 +36,13 @@ export default ({ updaterParts, firebase }) => {
 
 					// process failure actions
 					processActionGroup({ error, actionGroup: failureActions })
-					
+
 				})
 		},
 		websocket: (instructions) => {
 			// @TODO
 			const { beforeActions, successActions, failureActions, serviceOptions } = instructions
-			
+
 			// process actions for before api call
 			processActionGroup({ actionGroup: beforeActions })
 
@@ -62,7 +62,7 @@ export default ({ updaterParts, firebase }) => {
 				const actionGroup = instructions[eventName]
 
 				ws.addEventListener(eventName, (res) => {
-					
+
 					processActionGroup({ res, actionGroup: actionGroup })
 
 					// TODO handle sending messages
@@ -85,18 +85,33 @@ export default ({ updaterParts, firebase }) => {
 
 			// process before actions
 			processActionGroup({ actionGroup: beforeActions })
-			
+
 			// get firestore service variables
-			const { docId, collectionRefName, methodName, args, } = serviceOptions
-			
+			const { refType, refArray, operation, args } = serviceOptions
+
 			// If a docId is supplied, then a doc is referenced, otherwise a collection is referenced
 			// TODO may need to handle more complicated references
-			return firebase.firestoreRefs[refGeneratorName](refGeneratorConfig)[methodName](args)
+			return args
+				? firebase.firestore[refType](refArray.join('/'))[operation](args)
 					.then((res) => {
 
 						// process success actions
 						processActionGroup({ res, actionGroup: successActions })
-						
+
+						return res
+					})
+					.catch((error) => {
+
+						// process failure actions
+						processActionGroup({ error, actionGroup: failureActions })
+
+					})
+				:  firebase.firestore[refType](refArray.join('/'))[operation]()
+					.then((res) => {
+
+						// process success actions
+						processActionGroup({ res, actionGroup: successActions })
+
 						return res
 					})
 					.catch((error) => {
@@ -122,10 +137,10 @@ export default ({ updaterParts, firebase }) => {
 
 			? firebase.auth[ authMethod ]()
 				.then((res) => {
-					
+
 					// dispatch success actions
 					processActionGroup({ res, actionGroup: successActions })
-					
+
 					return res
 
 				})
@@ -135,12 +150,12 @@ export default ({ updaterParts, firebase }) => {
 					processActionGroup({ error, actionGroup: failureActions })
 
 				})
-			: firebase.auth.setPersistence('session') // abstract this to config
+			: firebase.auth.setPersistence('none') // abstract this to config ? want this to change depending on test env
 				.then(() => {
 					return  firebase.auth[ authMethod ]( email, password )
 						.then((res) => {
 
-							console.log('res', res)
+							// console.log('res', res)
 
 							// dispatch success actions
 							processActionGroup({ res, actionGroup: successActions })
@@ -157,8 +172,8 @@ export default ({ updaterParts, firebase }) => {
 				})
 		},
 
-		basicFirebase: !firebase ? undefined : ({ instructions }) => {
-			
+		firebase: !firebase ? undefined : ({ instructions }) => {
+
 			const { beforeActions, successActions, failureActions, serviceOptions } = instructions
 
 			// process before actions
@@ -169,11 +184,11 @@ export default ({ updaterParts, firebase }) => {
 			firebase.firebase.ref(ref)[methodName](args)
 				.then((res) => {
 
-					console.log('res from basicFirebase: ', res)
+					// console.log('res from basicFirebase: ', res)
 
 					// process success actions
 					processActionGroup({ res, actionGroup: successActions })
-					
+
 					return res
 				})
 				.catch((error) => {
