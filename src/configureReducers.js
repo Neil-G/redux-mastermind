@@ -1,3 +1,5 @@
+// @flow
+
 import { fromJS } from 'immutable'
 
 /**
@@ -21,11 +23,11 @@ function createReducer (branchName, defaultState = {}) {
 }
 
 
-export default (reducersConfig) => {
+export default (reducersConfig: {}) => {
 
     let configuredReducers = {}
 
-    Object.keys(reducersConfig).forEach((reducerName) => {
+    Object.keys(reducersConfig).forEach((reducerName: string) => {
         const defaultState = reducersConfig[reducerName]
         configuredReducers[reducerName] = createReducer(reducerName, defaultState)
     })

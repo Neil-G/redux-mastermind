@@ -1,28 +1,39 @@
 // @flow
 
+type ActionType = {
+	type: string,
+	location: Array<string>,
+	value: mixed,
+	valueFunction: () => mixed,
+	updateFunction: () => mixed,
+	locationFunction: () => Array<string>,
+	shouldDispatch: () => bool,
+	uiEventFunction: () => void
+}
+
 import { fromJS } from 'immutable'
 
-export default ({ store, alertify, swal }) => {
+export default ({ store }) => {
 
 	const _store = store
 
 	return {
 
 		// this will process an object full of actions
-		processActionGroup: ({ updateSchemaName = undefined, store = _store, error = {}, res = {}, actionGroup = {}, }) => {
+		processActionGroup: ({ updateSchemaName = undefined, store = _store, error = {}, res = {}, actionGroup = {} }) => {
 			if (actionGroup == undefined) return
 
 			const actionNames = Object.keys(actionGroup)
 
 			actionNames.forEach((actionName) => {
 
-				let action  = actionGroup[actionName]
+				let action: ActionType  = actionGroup[actionName]
 
 				// TODO: check for required fields: branch, location, operation, value || valueFunction, location || locationFunction
 				// updateIn, update + updateIn, update
 
 				// destructure action values used in processing
-				const { type, branch, valueFunction, value, shouldDispatch, delayDispatch, uiEventFunction, updateFunction, location, locationFunction } = action
+				const { valueFunction, value, shouldDispatch, uiEventFunction, updateFunction, location, locationFunction } = action
 
 				// update value
 				action.value = valueFunction ? valueFunction({ error, res, store, value }) : value
@@ -48,9 +59,8 @@ export default ({ store, alertify, swal }) => {
 				// dispatch action depending on fire
 				if ( shouldDispatch == undefined || shouldDispatch({ error, res, store, value }) ) {
 
-					// actions can be dispatched later, ie in uiEventFunction
-					// used for events that need confirmation
-					if (!delayDispatch) { store.dispatch(action) }
+					// dispatch the action here
+					 store.dispatch(action)
 
 					// fire ui event
 					if (uiEventFunction) uiEventFunction({ action, value, res, error, store, })

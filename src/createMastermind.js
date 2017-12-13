@@ -168,9 +168,11 @@ export default ({ options = {}, initialStoreState = {}, updateSchemaCreators = {
 			branches = new Set(branches)
 			listeningComponents.push({ component, branches })
 		},
+
 		removeFeed: (id) => {
 			listeningComponents = listeningComponents.filter( component => component.component.id != id )
 		},
+		
 		createID: require('uuid/v1')
 	}
 }
