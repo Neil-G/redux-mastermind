@@ -1,3 +1,5 @@
+// @flow
+
 import axios from 'axios'
 
 export default ({ updaterParts, firebase }) => {
@@ -49,7 +51,7 @@ export default ({ updaterParts, firebase }) => {
 			// socket connection
 			const ws = new WebSocket(serviceOptions.url)
 
-			const eventNames = Object.keys(instructions).filter((name) => {
+			const eventNames: Array<string>  = Object.keys(instructions).filter((name: string) => {
 				return name != 'serviceOptions' && name != 'error'
 			})
 
@@ -57,7 +59,7 @@ export default ({ updaterParts, firebase }) => {
 
 
 			// handle non-error events
-			for (var i = eventNames - 1; i >= 0; i--) {
+			for (var i = eventNames.length - 1; i >= 0; i--) {
 				const eventName = eventNames[i]
 				const actionGroup = instructions[eventName]
 

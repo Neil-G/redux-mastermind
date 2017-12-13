@@ -1,3 +1,10 @@
+// @flow
+
+type SigninCredentialsType = {
+    email: String,
+    password: String
+}
+
 export default {
 
     // makes sync updates to store
@@ -23,7 +30,7 @@ export default {
     }),
 
     // sign-in with firebase email & password
-    firebaseSignInWithEmail: ({ email, password }) => ({
+    firebaseSignInWithEmail: ({ email, password } : SigninCredentialsType ) => ({
         type: 'firebaseAuth',
     	description: 'email and password Firebase Auth',
     	serviceOptions: {
