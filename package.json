@@ -1,6 +1,6 @@
 {
   "name": "redux-mastermind",
-  "version": "3.0.1",
+  "version": "3.0.2",
   "description": "Transparent Redux State Transformation",
   "main": "lib/index.js",
   "dependencies": {
