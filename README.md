@@ -189,6 +189,8 @@ mastermind.update('genericApiUpdate', {
 
 The actionGroups beforeActions, successActions, failureActions, and afterActions all contain actions, with the only difference being that their actions are dispatched under different conditions/at different times
 
+# ! Attn: Docs not up to date past this point !
+
 ### updateSchemaCreators
 
 Although mastermind comes with built-in updateSchemaCreators, optimal use of the package requires the user to create his/her own updateSchemaCreators.  To do this, let's go over
