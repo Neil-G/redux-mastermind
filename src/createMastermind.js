@@ -172,7 +172,15 @@ export default ({ options = {}, initialStoreState = {}, updateSchemaCreators = {
 		removeFeed: (id) => {
 			listeningComponents = listeningComponents.filter( component => component.component.id != id )
 		},
-		
-		createID: require('uuid/v1')
+
+		createID: require('uuid/v1'),
+
+		branch: (branchName: string) => {
+			// add check and logging for valid branch name
+			return store.getState()[branchName]
+				? store.getState()[branchName].toJS()
+				: undefined
+		}
+
 	}
 }
