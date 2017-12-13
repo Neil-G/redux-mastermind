@@ -1,6 +1,5 @@
 const firebase = require("firebase")
 require("firebase/firestore")
-import createFirestoreRefs from './createFirestoreRefs.js'
 
 export default (firebaseConfig) => {
 
