@@ -1,6 +1,6 @@
 {
   "name": "redux-mastermind",
-  "version": "3.0.2",
+  "version": "3.0.3",
   "description": "Transparent Redux State Transformation",
   "main": "lib/index.js",
   "dependencies": {
@@ -10,6 +10,7 @@
     "immutable": "^3.8.2",
     "react": "^16.2.0",
     "react-redux": "^5.0.6",
+    "redux": "^3.7.2",
     "uuid": "^3.1.0"
   },
   "devDependencies": {
@@ -21,7 +22,6 @@
     "flow-bin": "^0.61.0",
     "jsdom": "^11.5.1",
     "npm": "^5.5.1",
-    "redux": "^3.7.2",
     "redux-logger": "^3.0.6",
     "tap": "^11.0.0",
     "tap-spec": "^4.1.1",
