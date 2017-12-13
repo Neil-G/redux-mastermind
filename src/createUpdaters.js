@@ -12,6 +12,8 @@ export default ({ updaterParts, firebase }) => {
 			// process actions
 			processActionGroup({ actionGroup: instructions.actions })
 
+			return true
+
 		},
 
 		// makes an api call using axios

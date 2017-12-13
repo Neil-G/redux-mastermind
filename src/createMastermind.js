@@ -6,6 +6,8 @@ import Docs from './Docs'
 import { applyMiddleware, combineReducers, createStore } from 'redux'
 import logger from 'redux-logger'
 import defaultUpdateSchemaCreators from './defaultUpdateSchemaCreators'
+import Promise from 'bluebird'
+
 const {
 	genericStoreUpdate,
 	genericApiUpdate,
@@ -15,6 +17,7 @@ const {
 } = defaultUpdateSchemaCreators
 
 
+const actionGroupKeys = ['actions', 'beforeActions', 'successActions', 'failureActions', 'afterActions' ]
 
 // TODO, add reduxConfig as an option to validate branches
 // TODO validate operations against locations
@@ -90,6 +93,8 @@ export default ({ options = {}, initialStoreState = {}, updateSchemaCreators = {
 	const updaterParts = createUpdaterParts({ store })
 	const updaters = createUpdaters({ updaterParts, firebase })
 
+	let listeningComponents = []
+
 	return {
 
 		store,
@@ -127,6 +132,7 @@ export default ({ options = {}, initialStoreState = {}, updateSchemaCreators = {
 				return
 			}
 
+
 			// check that user provides valid processor type
 			if (!updaters[type]) {
 				console.log('must provide a updater')
@@ -135,9 +141,36 @@ export default ({ options = {}, initialStoreState = {}, updateSchemaCreators = {
 			}
 
 			// log information about update
-			return updaters[type](updateSchema)
+			// return new updaters[type](updateSchema)
+			return new Promise ((resolve, reject) => {
+				resolve(updaters[type](updateSchema))
+			}).then((res) => {
+				let branchesAffected = new Set()
+				Object.keys(updateSchema).forEach((key) => {
+					if (actionGroupKeys.includes(key)) {
+						const actionGroup = updateSchema[key] || {}
+						Object.keys(actionGroup).forEach((actionName) => {
+							const action = actionGroup[actionName]
+							branchesAffected.add(action.type)
+						})
+					}
+				})
+				listeningComponents.forEach(component => {
+					const intersection = new Set([...branchesAffected].filter(x => component.branches.has(x)))
+					if (intersection.size) { component.component.forceUpdate() }
+				})
+				return res
+			})
 		},
 		createDocs: () => Docs({ updateSchemasCreators, actionCreators }),
 
+		feed: (component, branches = []) => {
+			branches = new Set(branches)
+			listeningComponents.push({ component, branches })
+		},
+		removeFeed: (id) => {
+			listeningComponents = listeningComponents.filter( component => component.component.id != id )
+		},
+		createID: require('uuid/v1')
 	}
 }
