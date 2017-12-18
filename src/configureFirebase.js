@@ -8,7 +8,7 @@ export default (firebaseConfig) => {
 
 	return {
 		auth: app.auth(),
-	    firebase: app.database(),
-	    firestore: app.firestore(),
+	  firebase: app.database(),
+	  firestore: app.firestore(),
 	}
 }

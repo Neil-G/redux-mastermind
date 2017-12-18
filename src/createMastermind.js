@@ -180,7 +180,7 @@ export default ({ options = {}, initialStoreState = {}, updateSchemaCreators = {
 			return store.getState()[branchName]
 				? store.getState()[branchName].toJS()
 				: undefined
-		}
-
+		},
+		
 	}
 }
