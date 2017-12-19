@@ -261,11 +261,12 @@ test('firebase auth and firestore crud', function(t) {
         })
         .then(() => {
             t.ok(true, 'firestore delete operation updates db properly')
+            t.end()            
+            process.exit()
         })
 
-        t.end()
 })
 
-test.createStream()
-  .pipe(tapSpec())
-  .pipe(process.stdout);
+// test.createStream()
+//   .pipe(tapSpec())
+//   .pipe(process.stdout);
