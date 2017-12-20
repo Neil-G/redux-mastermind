@@ -7,6 +7,7 @@ import { applyMiddleware, combineReducers, createStore } from 'redux'
 import logger from 'redux-logger'
 import defaultUpdateSchemaCreators from './defaultUpdateSchemaCreators'
 import Promise from 'bluebird'
+const uuidv1 = require('uuid/v1')
 
 const {
 	genericStoreUpdate,
@@ -164,16 +165,17 @@ export default ({ options = {}, initialStoreState = {}, updateSchemaCreators = {
 		},
 		createDocs: () => Docs({ updateSchemasCreators, actionCreators }),
 
-		feed: (component, branches = []) => {
+		addToFeed: (component, branches = []) => {
+			component.id = uuidv1()
 			branches = new Set(branches)
 			listeningComponents.push({ component, branches })
 		},
 
-		removeFeed: (id) => {
+		removeFromFeed: (id) => {
 			listeningComponents = listeningComponents.filter( component => component.component.id != id )
 		},
 
-		createID: require('uuid/v1'),
+		createID: uuidv1,
 
 		branch: (branchName: string) => {
 			// add check and logging for valid branch name
@@ -181,6 +183,6 @@ export default ({ options = {}, initialStoreState = {}, updateSchemaCreators = {
 				? store.getState()[branchName].toJS()
 				: undefined
 		},
-		
+
 	}
 }
