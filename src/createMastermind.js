@@ -54,19 +54,24 @@ export default ({ options = {}, initialStoreState = {}, updateSchemaCreators = {
 	let store
 	let createStore = options.createStore || createStore
 	let middlewares = options.middlewares || []
+	let reducers = options.reducers || {}
 	if (options.test == true) {
 
 		// for tests
-		store = createStore(combineReducers(
-			configureReducers(initialStoreState),
+		store = createStore(
+			combineReducers(
+				Object.assign({}, configureReducers(initialStoreState), reducers),
+			),
 			applyMiddleware(...middlewares)
-		))
+		)
 
 	} else if (options.web || options.web == undefined) {
 
 		// for web projects
 		store = createStore(
-			combineReducers(configureReducers(initialStoreState)),
+			combineReducers(
+				Object.assign({}, configureReducers(initialStoreState), reducers),				
+			),
 			window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__(),
 			applyMiddleware(...[...middlewares, logger]),
 		)
@@ -76,7 +81,9 @@ export default ({ options = {}, initialStoreState = {}, updateSchemaCreators = {
 
 		// for mobile
 		store = createStore(
-			combineReducers(configureReducers(initialStoreState)),
+			combineReducers(
+				Object.assign({}, configureReducers(initialStoreState), reducers),
+			),
 			applyMiddleware(...[...middlewares, logger]),
 		)
 
