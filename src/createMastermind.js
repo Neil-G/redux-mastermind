@@ -52,6 +52,7 @@ export default ({ options = {}, initialStoreState = {}, updateSchemaCreators = {
 	/*** CREATE STORE ***/
 
 	let store
+	let createStore = options.createStore || createStore
 	if (options.test == true) {
 
 		// for tests
