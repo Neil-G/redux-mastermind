@@ -53,10 +53,14 @@ export default ({ options = {}, initialStoreState = {}, updateSchemaCreators = {
 
 	let store
 	let createStore = options.createStore || createStore
+	let middlewares = options.middlewares || []
 	if (options.test == true) {
 
 		// for tests
-		store = createStore(combineReducers(configureReducers(initialStoreState)))
+		store = createStore(combineReducers(
+			configureReducers(initialStoreState),
+			applyMiddleware(...middlewares)
+		))
 
 	} else if (options.web || options.web == undefined) {
 
@@ -64,7 +68,7 @@ export default ({ options = {}, initialStoreState = {}, updateSchemaCreators = {
 		store = createStore(
 			combineReducers(configureReducers(initialStoreState)),
 			window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__(),
-			applyMiddleware(logger),
+			applyMiddleware(...[...middlewares, logger]),
 		)
 
 
@@ -73,7 +77,7 @@ export default ({ options = {}, initialStoreState = {}, updateSchemaCreators = {
 		// for mobile
 		store = createStore(
 			combineReducers(configureReducers(initialStoreState)),
-			applyMiddleware(logger),
+			applyMiddleware(...[...middlewares, logger]),
 		)
 
 	}
