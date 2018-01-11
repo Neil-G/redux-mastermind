@@ -35,8 +35,7 @@ export default ({ store }) => {
 				// destructure action values used in processing
 				const { valueFunction, value, shouldDispatch, uiEventFunction, updateFunction, location, locationFunction, operation } = action
 
-				// add operation if not present
-				action.operation = operation || 'setIn'
+
 
 				// update value
 				action.value = valueFunction ? valueFunction({ error, res, store, value }) : value
@@ -56,6 +55,14 @@ export default ({ store }) => {
 				// add update function params
 				action.updateFunction = updateFunction ? updateFunction.bind(null, { res, error, store, fromJS, value }) : undefined
 
+				// add operation
+				if (action.updateFunction) {
+					action.operation = 'updateIn'
+				} else if (!action.value) {
+					action.operation = 'deleteIn'
+				} else {
+					action.operation = 'setIn'
+				}
 
 				// TODO: add meta information about the updateSchemaCreator
 
