@@ -9,5 +9,19 @@ export default {
   	})
 
   	return convertedObject
+  },
+
+  // converts an object to an array
+  objectToArray: (object, key = 'id') => {
+    let convertedArray = []
+
+    Object.keys(object).forEach(_key => {
+      let item  = object[_key]
+      item[key] = _key
+      convertedArray.push(item)
+    })
+
+    return convertedArray
   }
+
 }

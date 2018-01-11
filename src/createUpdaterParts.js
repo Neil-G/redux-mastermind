@@ -33,7 +33,10 @@ export default ({ store }) => {
 				// updateIn, update + updateIn, update
 
 				// destructure action values used in processing
-				const { valueFunction, value, shouldDispatch, uiEventFunction, updateFunction, location, locationFunction } = action
+				const { valueFunction, value, shouldDispatch, uiEventFunction, updateFunction, location, locationFunction, operation } = action
+
+				// add operation if not present
+				action.operation = operation || 'setIn'
 
 				// update value
 				action.value = valueFunction ? valueFunction({ error, res, store, value }) : value

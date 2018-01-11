@@ -38,7 +38,7 @@ test('todo example: quickstart and built-in functionality', function (t) {
         actions: {
             createTodo: {
                 location: [ 'data', 'todos', '1' ],
-                operation: 'setIn',
+                // operation: 'setIn',
                 value: { title: 'test', complete: false }
             }
         }
@@ -47,7 +47,7 @@ test('todo example: quickstart and built-in functionality', function (t) {
     t.deepEqual(
         mastermind.getState().data.toJS(),
         { todos: { '1': { title: 'test', complete: false }}},
-        'genericStoreUpdate and setIn works properly'
+        'genericStoreUpdate and default setIn operation work properly'
     )
 
     // update
@@ -184,7 +184,7 @@ test('firebase auth and firestore crud', function(t) {
                         locationFunction: ({ res }) => {
                             return ['data', 'todos', res.id]
                         },
-                        operation: 'setIn',
+                        // operation: 'setIn',
                         valueFunction: ({ res }) => {
                             return { id: res.id, title: 'test', complete: false }
                         }
