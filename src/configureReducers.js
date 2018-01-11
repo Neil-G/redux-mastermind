@@ -15,7 +15,9 @@ function createReducer (branchName, defaultState = {}) {
         switch (action.type) {
         case branchName:
             // TODO add control flow to handle immutable methods
-            return state[operation]( location, updateFunction || fromJS(value) || undefined )
+            return location.length > 0
+              ? state[operation]( location, updateFunction || fromJS(value) || undefined )
+              : fromJS(value)
         default:
             return state
         }
