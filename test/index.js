@@ -2,10 +2,40 @@ const testData = require('./testData')
 const createMastermind = require('./../lib/').createMastermind
 const test = require('tape');
 const tapSpec = require('tap-spec');
-const helpers = require('./helpers')
+const helpers = require('./../lib/').helpers
 
 // test options
 const options = { test: true }
+
+test('helpers', function(t) {
+	const dataObject = {
+		1: {
+			name: 'Neil'
+		},
+		2: {
+			name: 'Bob'
+		}
+	}
+
+	const arrayFromObject = helpers.objectToArray(dataObject)
+
+	t.deepEqual(
+		arrayFromObject,
+		[{id: '1', name: 'Neil'}, {id: '2', name: 'Bob'}],
+		'helper objectToArray works correctly with defaults'
+	)
+
+	const objectFromArray = helpers.arrayToObject(arrayFromObject)
+
+	t.deepEqual(
+		objectFromArray,
+		{ 1: {id: '1', name: 'Neil'}, 2: {id: '2', name: 'Bob'} },
+		'helper arrayToObject works correctly with defaults'
+	)
+
+	t.end()
+
+})
 
 test('todo example: quickstart and built-in functionality', function (t) {
 
