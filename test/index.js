@@ -8,6 +8,7 @@ const helpers = require('./../lib/').helpers
 const options = { test: true }
 
 test('helpers', function(t) {
+	
 	const dataObject = {
 		1: {
 			name: 'Neil'

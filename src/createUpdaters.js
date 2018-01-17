@@ -131,49 +131,71 @@ export default ({ updaterParts, firebase }) => {
 
 			const { beforeActions, successActions, failureActions, serviceOptions } = instructions
 
-			// process before actions
 			processActionGroup({ actionGroup: beforeActions })
 
-			// get variables for firebase auth operations
-			const { authMethod, email, password } = serviceOptions
+			const { authMethod, email, password, persistenceType } = serviceOptions
 
-			return authMethod == 'signOut'
+			switch (authMethod) {
 
-			? firebase.auth[ authMethod ]()
-				.then((res) => {
+				case 'signInWithEmailAndPassword':
+					return firebase.auth.setPersistence( persistenceType || 'none' )
+						.then(() => {
+							return  firebase.auth.signInWithEmailAndPassword(email, password)
+								.then((res) => {
 
-					// dispatch success actions
-					processActionGroup({ res, actionGroup: successActions })
+									processActionGroup({ res, actionGroup: successActions })
 
-					return res
+									return res
 
-				})
-				.catch((error) => {
+								})
+						})
+						.catch((error) => {
 
-					// process failure actions
-					processActionGroup({ error, actionGroup: failureActions })
+							processActionGroup({ error, actionGroup: failureActions })
 
-				})
-			: firebase.auth.setPersistence('none') // abstract this to config ? want this to change depending on test env
-				.then(() => {
-					return  firebase.auth[ authMethod ]( email, password )
+						})
+
+				case 'signOut':
+					return firebase.auth.signOut()
 						.then((res) => {
 
-							// console.log('res', res)
+							processActionGroup({ res, actionGroup: successActions })
 
-							// dispatch success actions
+						})
+						.catch((error) => {
+
+							processActionGroup({ error, actionGroup: failureActions })
+
+						})
+
+				case 'createUserWithEmailAndPassword':
+					return firebase.auth.createUserWithEmailAndPassword(email, password)
+						.then((res) => {
+
 							processActionGroup({ res, actionGroup: successActions })
 
 							return res
 
 						})
-				})
-				.catch((error) => {
+						.catch((error) => {
 
-					// process failure actions
-					processActionGroup({ error, actionGroup: failureActions })
+							processActionGroup({ error, actionGroup: failureActions })
 
-				})
+						})
+
+				// use this to log user into redux with persistent firebase auth		
+				case 'onAuthStateChanged':
+					return firebase.auth.onAuthStateChanged((res) => { // this will be the user object
+
+						processActionGroup({ res, actionGroup: actions || successActions })
+
+					})
+
+				// TODO: social auth
+
+				default:
+				 	return
+			}
 		},
 
 		firebase: !firebase ? undefined : ({ instructions }) => {
