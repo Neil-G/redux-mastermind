@@ -8,46 +8,42 @@ export default ({ updaterParts, firebase }) => {
 
 	return {
 
-		// dipsatches actions straight to the store
 		store: (instructions) => {
 
-			// process actions
 			processActionGroup({ actionGroup: instructions.actions })
 
 			return true
 
 		},
 
-		// makes an api call using axios
 		api: (instructions) => {
 
-			const { beforeActions, successActions, failureActions, serviceOptions } = instructions
+			const { beforeActions, successActions, failureActions, afterActions, serviceOptions } = instructions
 
-			// process actions for before api call
 			processActionGroup({ actionGroup: beforeActions })
 
-			// api call
 			return axios(serviceOptions || {})
 				.then((res) => {
 
-					// process success actions
 					processActionGroup({ res, actionGroup: successActions })
+
+					processActionGroup({ res, actionGroup: afterActions })
 
 					return res
 
 				})
 				.catch((error) => {
 
-					// process failure actions
 					processActionGroup({ error, actionGroup: failureActions })
+
+					processActionGroup({ error, actionGroup: afterActions })
 
 				})
 		},
 		websocket: (instructions) => {
 			// @TODO
-			const { beforeActions, successActions, failureActions, serviceOptions } = instructions
+			const { beforeActions, successActions, failureActions, afterActions, serviceOptions } = instructions
 
-			// process actions for before api call
 			processActionGroup({ actionGroup: beforeActions })
 
 			// socket connection
@@ -61,7 +57,7 @@ export default ({ updaterParts, firebase }) => {
 
 
 			// handle non-error events
-			for (var i = eventNames.length - 1; i >= 0; i--) {
+			for (let i = eventNames.length - 1; i >= 0; i--) {
 				const eventName = eventNames[i]
 				const actionGroup = instructions[eventName]
 
@@ -76,7 +72,9 @@ export default ({ updaterParts, firebase }) => {
 
 			// handle error
 			ws.addEventListener('error', (error) => {
+
 				processActionGroup({ error, actionGroup: failureActions })
+
 			})
 
 		},
@@ -85,12 +83,10 @@ export default ({ updaterParts, firebase }) => {
 		// CRUD for firestore collections and docs
 		firestore: !firebase ? undefined : (instructions) => {
 
-			const { beforeActions, successActions, failureActions, serviceOptions } = instructions
+			const { beforeActions, successActions, failureActions, afterActions, serviceOptions } = instructions
 
-			// process before actions
 			processActionGroup({ actionGroup: beforeActions })
 
-			// get firestore service variables
 			const { refType, refArray, operation, args } = serviceOptions
 
 			// If a docId is supplied, then a doc is referenced, otherwise a collection is referenced
@@ -99,29 +95,34 @@ export default ({ updaterParts, firebase }) => {
 				? firebase.firestore[refType](refArray.join('/'))[operation](args)
 					.then((res) => {
 
-						// process success actions
 						processActionGroup({ res, actionGroup: successActions })
+
+						processActionGroup({ res, actionGroup: afterActions })
 
 						return res
 					})
 					.catch((error) => {
 
-						// process failure actions
 						processActionGroup({ error, actionGroup: failureActions })
+
+						processActionGroup({ error, actionGroup: afterActions })
+
 
 					})
 				:  firebase.firestore[refType](refArray.join('/'))[operation]()
 					.then((res) => {
 
-						// process success actions
 						processActionGroup({ res, actionGroup: successActions })
+
+						processActionGroup({ res, actionGroup: afterActions })
 
 						return res
 					})
 					.catch((error) => {
 
-						// process failure actions
 						processActionGroup({ error, actionGroup: failureActions })
+
+						processActionGroup({ error, actionGroup: afterActions })
 
 					})
 		},
@@ -129,7 +130,7 @@ export default ({ updaterParts, firebase }) => {
 		// used to signup, signing, and signout of Firebase Auth
 		firebaseAuth: !firebase ? undefined : (instructions) => {
 
-			const { beforeActions, successActions, failureActions, serviceOptions } = instructions
+			const { beforeActions, successActions, failureActions, afterActions, serviceOptions } = instructions
 
 			processActionGroup({ actionGroup: beforeActions })
 
@@ -145,6 +146,8 @@ export default ({ updaterParts, firebase }) => {
 
 									processActionGroup({ res, actionGroup: successActions })
 
+									processActionGroup({ res, actionGroup: afterActions })
+
 									return res
 
 								})
@@ -152,6 +155,8 @@ export default ({ updaterParts, firebase }) => {
 						.catch((error) => {
 
 							processActionGroup({ error, actionGroup: failureActions })
+
+							processActionGroup({ error, actionGroup: afterActions })
 
 						})
 
@@ -161,10 +166,14 @@ export default ({ updaterParts, firebase }) => {
 
 							processActionGroup({ res, actionGroup: successActions })
 
+							processActionGroup({ res, actionGroup: afterActions })
+
 						})
 						.catch((error) => {
 
 							processActionGroup({ error, actionGroup: failureActions })
+
+							processActionGroup({ error, actionGroup: afterActions })
 
 						})
 
@@ -174,6 +183,8 @@ export default ({ updaterParts, firebase }) => {
 
 							processActionGroup({ res, actionGroup: successActions })
 
+							processActionGroup({ res, actionGroup: afterActions })
+
 							return res
 
 						})
@@ -181,13 +192,17 @@ export default ({ updaterParts, firebase }) => {
 
 							processActionGroup({ error, actionGroup: failureActions })
 
+							processActionGroup({ error, actionGroup: afterActions })
+
 						})
 
-				// use this to log user into redux with persistent firebase auth		
+				// use this to log user into redux with persistent firebase auth
 				case 'onAuthStateChanged':
 					return firebase.auth.onAuthStateChanged((res) => { // this will be the user object
 
 						processActionGroup({ res, actionGroup: actions || successActions })
+
+						processActionGroup({ res, actionGroup: afterActions })
 
 					})
 
@@ -198,9 +213,10 @@ export default ({ updaterParts, firebase }) => {
 			}
 		},
 
+		// use for realtime firebase CRUD
 		firebase: !firebase ? undefined : ({ instructions }) => {
 
-			const { beforeActions, successActions, failureActions, serviceOptions } = instructions
+			const { beforeActions, successActions, failureActions, afterActions, serviceOptions } = instructions
 
 			// process before actions
 			processActionGroup({ actionGroup: beforeActions })
@@ -210,24 +226,24 @@ export default ({ updaterParts, firebase }) => {
 			firebase.firebase.ref(ref)[methodName](args)
 				.then((res) => {
 
-					// console.log('res from basicFirebase: ', res)
-
-					// process success actions
 					processActionGroup({ res, actionGroup: successActions })
+
+					processActionGroup({ res, actionGroup: afterActions })
 
 					return res
 				})
 				.catch((error) => {
 
-					// process failure actions
 					processActionGroup({ error, actionGroup: failureActions })
+
+					processActionGroup({ error, actionGroup: afterActions })
 
 				})
 		},
 
 		attachFirebaseListener: !firebase ? undefined : ({ instructions }) => {
 			const { ref, onChangeActions } = instructions
-			firebase.firebase.ref(ref).on('value', (res) => {
+			firebase.firebase.ref(ref).on('value', (res) => { // 'value' should be a service option
 
 				console.log('change detected in realtime db at ref: ', res, res.val())
 
