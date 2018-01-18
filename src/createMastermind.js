@@ -201,6 +201,8 @@ export default ({ options = {}, initialStoreState = {}, updateSchemaCreators = {
 
 		createID: uuidv1,
 
+		store,
+
 		branch: (branchName: string) => {
 			// add check and logging for valid branch name
 			return store.getState()[branchName]
