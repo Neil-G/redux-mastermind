@@ -18,7 +18,6 @@ const {
 } = defaultUpdateSchemaCreators
 
 
-const actionGroupKeys = ['actions', 'beforeActions', 'successActions', 'failureActions', 'afterActions' ]
 
 // TODO, add reduxConfig as an option to validate branches
 // TODO validate operations against locations
@@ -119,6 +118,7 @@ export default ({ options = {}, initialStoreState = {}, updateSchemaCreators = {
 			// check that user provides valid name
 			if (!updateSchemaCreators[updateSchemaName]) {
 				console.log('must provide a valid name')
+				console.log('valid names: ', Object.keys(updateSchemaCreators).sort() )
 				// fuzzy search possible names and give suggestion along with list of valid instructions
 				return
 			}
@@ -137,42 +137,66 @@ export default ({ options = {}, initialStoreState = {}, updateSchemaCreators = {
 			// check that user provides valid processor type
 			if (!updaters[type]) {
 				console.log('must provide a updater')
+				console.log('valid updaters: ', Object.keys(updaters).sort())
 				// fuzzy search possible type and give suggestion alongwith list of valid instructions
 				return
 			}
+
+			const actionGroupKeys = [ 'actions', 'beforeActions', 'successActions', 'failureActions', 'afterActions', 'onChangeActions' ]
 
 			// log information about update
 			// return new updaters[type](updateSchema)
 			return new Promise ((resolve, reject) => {
 				resolve(updaters[type](updateSchema))
 			}).then((res) => {
-				let branchesAffected = new Set()
+
+				// collect all locations affected to compare against what listeningComponents' locations
+				let locationsAffected = new Set()
+
 				Object.keys(updateSchema).forEach((key) => {
+
+					// get actionGroups from updateSchema
 					if (actionGroupKeys.includes(key)) {
 						const actionGroup = updateSchema[key] || {}
+
+						// get actions from the actionGroups
 						Object.keys(actionGroup).forEach((actionName) => {
+
 							const action = actionGroup[actionName]
-							branchesAffected.add(action.type)
+
+							locationsAffected.add([action.type, ...action.location])
 						})
 					}
 				})
+
+				const locationsAffectedArray = [...locationsAffected]
+
+				// update listeningComponents
 				listeningComponents.forEach(component => {
-					const intersection = new Set([...branchesAffected].filter(x => component.branches.has(x)))
-					if (intersection.size) { component.component.forceUpdate() }
+					locationsAffectedArray.forEach(locationAffected => {
+
+						// compare arrays of same length, trim the longer array
+						const maxLocationLength = Math.min(component.location.length, locationAffected.length)
+						const componentLocationForComparison = component.location.slice(0, maxLocationLength)
+						const affectedLocationForComparison = locationAffected.slice(0, maxLocationLength)
+
+						// compare the comparison locations
+						const locationsMatch = JSON.stringify(componentLocationForComparison) == JSON.stringify(affectedLocationForComparison)
+						if ( locationsMatch ) { component.component.forceUpdate() }
+
+					})
 				})
 				return res
 			})
 		},
 		createDocs: () => Docs({ updateSchemasCreators, actionCreators }),
 
-		addToFeed: (component, branches = []) => {
-			component.id = uuidv1()
-			branches = new Set(branches)
-			listeningComponents.push({ component, branches })
+		addToFeed: (component, location = []) => {
+			listeningComponents.push({ id: uuidv1(), component, location })
 		},
 
 		removeFromFeed: (id) => {
-			listeningComponents = listeningComponents.filter( component => component.component.id != id )
+			listeningComponents = listeningComponents.filter( component => component.id != id )
 		},
 
 		createID: uuidv1,

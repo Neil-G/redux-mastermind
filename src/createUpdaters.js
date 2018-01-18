@@ -40,6 +40,7 @@ export default ({ updaterParts, firebase }) => {
 
 				})
 		},
+
 		websocket: (instructions) => {
 			// @TODO
 			const { beforeActions, successActions, failureActions, afterActions, serviceOptions } = instructions
@@ -223,32 +224,53 @@ export default ({ updaterParts, firebase }) => {
 
 			const { ref, methodName, args } = serviceOptions
 
-			firebase.firebase.ref(ref)[methodName](args)
-				.then((res) => {
+			return args
+			? firebase.firebase.ref(ref)[methodName](args)
+					.then((res) => {
 
-					processActionGroup({ res, actionGroup: successActions })
+						processActionGroup({ res, actionGroup: successActions })
 
-					processActionGroup({ res, actionGroup: afterActions })
+						processActionGroup({ res, actionGroup: afterActions })
 
-					return res
-				})
-				.catch((error) => {
+						return res
+					})
+					.catch((error) => {
 
-					processActionGroup({ error, actionGroup: failureActions })
+						processActionGroup({ error, actionGroup: failureActions })
 
-					processActionGroup({ error, actionGroup: afterActions })
+						processActionGroup({ error, actionGroup: afterActions })
 
-				})
+					})
+			: firebase.firebase.ref(ref)[methodName]()
+					.then((res) => {
+
+						processActionGroup({ res, actionGroup: successActions })
+
+						processActionGroup({ res, actionGroup: afterActions })
+
+						return res
+					})
+					.catch((error) => {
+
+						processActionGroup({ error, actionGroup: failureActions })
+
+						processActionGroup({ error, actionGroup: afterActions })
+
+					})
 		},
 
 		attachFirebaseListener: !firebase ? undefined : ({ instructions }) => {
-			const { ref, onChangeActions } = instructions
-			firebase.firebase.ref(ref).on('value', (res) => { // 'value' should be a service option
+
+			const { onChangeActions, serviceOptions } = instructions
+
+			const { ref, eventMethod } = serviceOptions
+
+			firebase.firebase.ref(ref).on(eventMethod, (res) => {
 
 				console.log('change detected in realtime db at ref: ', res, res.val())
 
-				// process success actions
 				processActionGroup({ res, actionGroup: onChangeActions })
+				
 			})
 		},
 	}

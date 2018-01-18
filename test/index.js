@@ -8,7 +8,7 @@ const helpers = require('./../lib/').helpers
 const options = { test: true }
 
 test('helpers', function(t) {
-	
+
 	const dataObject = {
 		1: {
 			name: 'Neil'
@@ -296,5 +296,4 @@ test('firebase auth and firestore crud', function(t) {
             t.end()
             process.exit()
         })
-
 })
