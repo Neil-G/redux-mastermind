@@ -228,7 +228,7 @@ export default ({ options = {}, initialStoreState = {}, updateSchemaCreators = {
 
 				return mappedState
 			}
-			return connect(mapStateToProps, component)
+			return connect(mapStateToProps)(component)
 		}
 	}
 }
