@@ -8,6 +8,7 @@ import logger from 'redux-logger'
 import defaultUpdateSchemaCreators from './defaultUpdateSchemaCreators'
 import Promise from 'bluebird'
 const uuidv1 = require('uuid/v1')
+import { connect } from 'react-redux'
 
 const {
 	genericStoreUpdate,
@@ -97,10 +98,6 @@ export default ({ options = {}, initialStoreState = {}, updateSchemaCreators = {
 
 	return {
 
-		store,
-
-		getState: store.getState,
-
 		update: (updateSchemaName, updateArgs) => {
 
 			// check that user provides required name field
@@ -117,8 +114,8 @@ export default ({ options = {}, initialStoreState = {}, updateSchemaCreators = {
 
 			// check that user provides valid name
 			if (!updateSchemaCreators[updateSchemaName]) {
-				console.log('must provide a valid name')
-				console.log('valid names: ', Object.keys(updateSchemaCreators).sort() )
+				console.log('must provide a valid updateSchemaName')
+				console.log('valid updateSchemaNames: ', Object.keys(updateSchemaCreators).sort() )
 				// fuzzy search possible names and give suggestion along with list of valid instructions
 				return
 			}
@@ -189,6 +186,8 @@ export default ({ options = {}, initialStoreState = {}, updateSchemaCreators = {
 				return res
 			})
 		},
+
+		// TODO: finish this
 		createDocs: () => Docs({ updateSchemasCreators, actionCreators }),
 
 		addToFeed: (component, location = []) => {
@@ -199,9 +198,11 @@ export default ({ options = {}, initialStoreState = {}, updateSchemaCreators = {
 			listeningComponents = listeningComponents.filter( component => component.id != id )
 		},
 
-		createID: uuidv1,
+		createId: uuidv1,
 
 		store,
+
+		getState: store.getState,
 
 		branch: (branchName: string) => {
 			// add check and logging for valid branch name
@@ -210,5 +211,24 @@ export default ({ options = {}, initialStoreState = {}, updateSchemaCreators = {
 				: undefined
 		},
 
+		// creates a mapStateToProps function for connected components
+		// takes an array of strings
+		connectStore: (component, branches: Array<string>) => {
+
+			// function that maps store state to component props
+			const mapStateToProps = state => {
+
+				// initialize return object
+				let mappedState = {}
+
+				// populate return object
+				branches.forEach(branchName => {
+					mappedState[branchName] = state[branchName].toJS()
+				})
+
+				return mappedState
+			}
+			return connect(mapStateToProps, component)
+		}
 	}
 }
