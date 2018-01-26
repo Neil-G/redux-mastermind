@@ -3,7 +3,7 @@ import createUpdaters from './createUpdaters'
 import configureFirebase from './configureFirebase'
 import configureReducers from './configureReducers'
 import Docs from './Docs'
-import { applyMiddleware, combineReducers, createStore } from 'redux'
+import { applyMiddleware, combineReducers, createStore, compose } from 'redux'
 import logger from 'redux-logger'
 import defaultUpdateSchemaCreators from './defaultUpdateSchemaCreators'
 import Promise from 'bluebird'
@@ -59,12 +59,17 @@ export default ({ options = {}, initialStoreState = {}, updateSchemaCreators = {
 		store = createStore(combineReducers(configureReducers(initialStoreState)))
 
 	} else if (options.web || options.web == undefined) {
+		const composeEnhancers =
+		typeof window === 'object' &&
+		window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ ?   
+		  window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__({
+			// Specify extension’s options like name, actionsBlacklist, actionsCreators, serialize...
+		  }) : compose;
 
 		// for web projects
 		store = createStore(
 			combineReducers(configureReducers(initialStoreState)),
-			window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__(),
-			applyMiddleware(logger),
+			composeEnhancers(applyMiddleware(logger)),
 		)
 
 
