@@ -45,10 +45,10 @@ export default ({ store }) => {
 				$action.location = locationFunction ? locationFunction({ error, res, store, value }) : location
 
 				// add type
-				$action.type = action.location[0]
+				$action.type = $action.location[0]
 
 				// trim first value from location
-				$action.location = action.location.slice(1)
+				$action.location = $action.location.slice(1)
 
 				// add name
 				$action.name = actionName
