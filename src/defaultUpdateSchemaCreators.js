@@ -30,7 +30,7 @@ export default {
     }),
 
     // sign-in with firebase email & password
-    firebaseSignInWithEmail: ({ email, password, customFailureAction = () => ({}) }) => ({
+    firebaseSignInWithEmail: ({ email, password }) => ({
       type: 'firebaseAuth',
     	description: 'email and password Firebase Auth',
     	serviceOptions: {
@@ -60,7 +60,6 @@ export default {
             	return error
             },
           },
-          customFailureAction: customFailureAction(),
         }
     }),
 
