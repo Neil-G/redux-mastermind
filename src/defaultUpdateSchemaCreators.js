@@ -30,8 +30,8 @@ export default {
     }),
 
     // sign-in with firebase email & password
-    firebaseSignInWithEmail: ({ email, password } : SigninCredentialsType ) => ({
-        type: 'firebaseAuth',
+    firebaseSignInWithEmail: ({ email, password, customFailureAction = () => ({}) }) => ({
+      type: 'firebaseAuth',
     	description: 'email and password Firebase Auth',
     	serviceOptions: {
             authMethod: 'signInWithEmailAndPassword',
@@ -53,13 +53,14 @@ export default {
         },
         failureActions: {
         	recordLoginFailure: {
-              location: ['appState', 'error', 'firebaseLoginWithEmail'],
-              operation: 'setIn',
-              valueFunction: ({ error }) => {
-              	console.log('error on firebase login', error)
-              	return error
-              },
+            location: ['appState', 'error', 'firebaseLoginWithEmail'],
+            operation: 'setIn',
+            valueFunction: ({ error }) => {
+            	console.log('error on firebase login', error)
+            	return error
             },
+          },
+          customFailureAction: customFailureAction(),
         }
     }),
 
