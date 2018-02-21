@@ -57,9 +57,9 @@ export default ({ store }) => {
 				$action.updateFunction = updateFunction ? updateFunction.bind(null, { res, error, store, fromJS, value }) : undefined
 
 				// add operation
-				if (action.updateFunction) {
+				if ($action.updateFunction) {
 					$action.operation = 'updateIn'
-				} else if (!action.value) {
+				} else if (!$action.value) {
 					$action.operation = 'deleteIn'
 				} else {
 					$action.operation = 'setIn'
