@@ -61,7 +61,7 @@ export default ({ options = {}, initialStoreState = {}, updateSchemaCreators = {
 	} else if (options.web || options.web == undefined) {
 		const composeEnhancers =
 		typeof window === 'object' &&
-		window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ ?   
+		window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ ?
 		  window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__({
 			// Specify extension’s options like name, actionsBlacklist, actionsCreators, serialize...
 		  }) : compose;
@@ -152,42 +152,42 @@ export default ({ options = {}, initialStoreState = {}, updateSchemaCreators = {
 				resolve(updaters[type](updateSchema))
 			}).then((res) => {
 
-				// collect all locations affected to compare against what listeningComponents' locations
-				let locationsAffected = new Set()
-
-				Object.keys(updateSchema).forEach((key) => {
-
-					// get actionGroups from updateSchema
-					if (actionGroupKeys.includes(key)) {
-						const actionGroup = updateSchema[key] || {}
-
-						// get actions from the actionGroups
-						Object.keys(actionGroup).forEach((actionName) => {
-
-							const action = actionGroup[actionName]
-
-							locationsAffected.add([action.type, ...action.location])
-						})
-					}
-				})
-
-				const locationsAffectedArray = [...locationsAffected]
-
-				// update listeningComponents
-				listeningComponents.forEach(component => {
-					locationsAffectedArray.forEach(locationAffected => {
-
-						// compare arrays of same length, trim the longer array
-						const maxLocationLength = Math.min(component.location.length, locationAffected.length)
-						const componentLocationForComparison = component.location.slice(0, maxLocationLength)
-						const affectedLocationForComparison = locationAffected.slice(0, maxLocationLength)
-
-						// compare the comparison locations
-						const locationsMatch = JSON.stringify(componentLocationForComparison) == JSON.stringify(affectedLocationForComparison)
-						if ( locationsMatch ) { component.component.forceUpdate() }
-
-					})
-				})
+				// // collect all locations affected to compare against what listeningComponents' locations
+				// let locationsAffected = new Set()
+        //
+				// Object.keys(updateSchema).forEach((key) => {
+        //
+				// 	// get actionGroups from updateSchema
+				// 	if (actionGroupKeys.includes(key)) {
+				// 		const actionGroup = updateSchema[key] || {}
+        //
+				// 		// get actions from the actionGroups
+				// 		Object.keys(actionGroup).forEach((actionName) => {
+        //
+				// 			const action = actionGroup[actionName]
+        //
+				// 			locationsAffected.add([action.type, ...action.location])
+				// 		})
+				// 	}
+				// })
+        //
+				// const locationsAffectedArray = [...locationsAffected]
+        //
+				// // update listeningComponents
+				// listeningComponents.forEach(component => {
+				// 	locationsAffectedArray.forEach(locationAffected => {
+        //
+				// 		// compare arrays of same length, trim the longer array
+				// 		const maxLocationLength = Math.min(component.location.length, locationAffected.length)
+				// 		const componentLocationForComparison = component.location.slice(0, maxLocationLength)
+				// 		const affectedLocationForComparison = locationAffected.slice(0, maxLocationLength)
+        //
+				// 		// compare the comparison locations
+				// 		const locationsMatch = JSON.stringify(componentLocationForComparison) == JSON.stringify(affectedLocationForComparison)
+				// 		if ( locationsMatch ) { component.component.forceUpdate() }
+        //
+				// 	})
+				// })
 				return res
 			})
 		},
