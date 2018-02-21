@@ -215,7 +215,7 @@ export default ({ updaterParts, firebase }) => {
 		},
 
 		// use for realtime firebase CRUD
-		firebase: !firebase ? undefined : ({ instructions }) => {
+		firebase: !firebase ? undefined : ( instructions ) => {
 
 			const { beforeActions, successActions, failureActions, afterActions, serviceOptions } = instructions
 
@@ -223,6 +223,24 @@ export default ({ updaterParts, firebase }) => {
 			processActionGroup({ actionGroup: beforeActions })
 
 			const { ref, methodName, args } = serviceOptions
+
+			if (methodName == 'once') {
+				return firebase.firebase.ref(ref).once('value')
+					.then((res) => {
+
+						processActionGroup({ res, actionGroup: successActions })
+
+						processActionGroup({ res, actionGroup: afterActions })
+
+					})
+					.catch((error) => {
+
+						processActionGroup({ error, actionGroup: failureActions })
+
+						processActionGroup({ error, actionGroup: afterActions })
+
+					})
+			}
 
 			return args
 			? firebase.firebase.ref(ref)[methodName](args)
@@ -259,7 +277,7 @@ export default ({ updaterParts, firebase }) => {
 					})
 		},
 
-		attachFirebaseListener: !firebase ? undefined : ({ instructions }) => {
+		attachFirebaseListener: !firebase ? undefined : ( instructions ) => {
 
 			const { onChangeActions, serviceOptions } = instructions
 
@@ -270,7 +288,7 @@ export default ({ updaterParts, firebase }) => {
 				console.log('change detected in realtime db at ref: ', res, res.val())
 
 				processActionGroup({ res, actionGroup: onChangeActions })
-				
+
 			})
 		},
 	}
