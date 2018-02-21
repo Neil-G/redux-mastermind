@@ -6,14 +6,14 @@
   "dependencies": {
     "axios": "^0.17.1",
     "bluebird": "^3.5.1",
-    "firebase": "^4.7.0",
+    "firebase": "^4.10.0",
     "immutable": "^3.8.2",
     "react": "^16.2.0",
-    "react-redux": "^5.0.6",
+    "react-redux": "^5.0.7",
     "redux": "^3.7.2",
     "redux-logger": "^3.0.6",
-    "remap-istanbul": "^0.9.5",
-    "uuid": "^3.1.0"
+    "remap-istanbul": "^0.9.6",
+    "uuid": "^3.2.1"
   },
   "devDependencies": {
     "babel-cli": "^6.26.0",
@@ -24,10 +24,10 @@
     "babel-preset-react": "^6.24.1",
     "flow-bin": "^0.61.0",
     "istanbul": "^0.4.5",
-    "jsdom": "^11.5.1",
-    "tap": "^11.0.0",
+    "jsdom": "^11.6.2",
+    "tap": "^11.1.1",
     "tap-spec": "^4.1.1",
-    "tape": "^4.8.0"
+    "tape": "^4.9.0"
   },
   "scripts": {
     "test": "istanbul cover tape -r ./test/helper.js ./test/index.js | tap-spec ",
