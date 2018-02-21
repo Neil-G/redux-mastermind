@@ -224,24 +224,6 @@ export default ({ updaterParts, firebase }) => {
 
 			const { ref, methodName, args } = serviceOptions
 
-			if (methodName == 'once') {
-				return firebase.firebase.ref(ref).once('value')
-					.then((res) => {
-
-						processActionGroup({ res, actionGroup: successActions })
-
-						processActionGroup({ res, actionGroup: afterActions })
-
-					})
-					.catch((error) => {
-
-						processActionGroup({ error, actionGroup: failureActions })
-
-						processActionGroup({ error, actionGroup: afterActions })
-
-					})
-			}
-
 			return args
 			? firebase.firebase.ref(ref)[methodName](args)
 					.then((res) => {
