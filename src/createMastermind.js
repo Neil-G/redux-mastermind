@@ -22,7 +22,7 @@ const {
 
 // TODO, add reduxConfig as an option to validate branches
 // TODO validate operations against locations
-export default ({ options = {}, initialStoreState = {}, updateSchemaCreators = {}, firebaseConfig }) => {
+export default ({ options = {}, initialStoreState = {}, updateSchemaCreators = {}, firebaseConfig, selectors= {} }) => {
 
 
 	/*** INITIALIZE AND CHECK ARGUMENTS ***/
@@ -218,7 +218,7 @@ export default ({ options = {}, initialStoreState = {}, updateSchemaCreators = {
 
 		// creates a mapStateToProps function for connected components
 		// takes an array of strings
-		connectStore: (component, branches: Array<string>) => {
+		connectStore: (component, key: Array<string>, shouldReturnAFunction = false) => {
 
 			// function that maps store state to component props
 			const mapStateToProps = state => {
@@ -227,11 +227,20 @@ export default ({ options = {}, initialStoreState = {}, updateSchemaCreators = {
 				let mappedState = {}
 
 				// populate return object
-				branches.forEach(branchName => {
-					mappedState[branchName] = state[branchName].toJS()
+				branches.forEach(key => {
+
+					// add selector connection
+					if (key.split(':').length === 2 && selectors[key.split(':')[1]]) {
+						mappedState[key.split(':')[0]] = selectors[key.split(':')[1]](state)
+
+					// add branch connection
+					} else if (state[key]) {
+						mappedState[key] = state[key].toJS()
+					}
+
 				})
 
-				return mappedState
+				return shouldReturnAFunction ? (state,props) => mappedState : mappedState
 			}
 			return connect(mapStateToProps)(component)
 		}
