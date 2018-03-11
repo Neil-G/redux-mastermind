@@ -273,5 +273,32 @@ export default ({ updaterParts, firebase }) => {
 
 			})
 		},
+
+		// firebaseStorage: !firebase ? undefined : ( instructions ) => {
+    //
+		// 	const { successActions, failureActions, serviceOptions, afterActions } = instructions
+    //
+		// 	const { ref, methodName, file, metadata } = serviceOptions
+    //
+		// 	const uploadTask = firebase.storage.ref(ref)[methodName](file)
+    //
+    //
+    //
+		// 	return uploadTask
+		// 		.then((res) => {
+    //
+		// 			processActionGroup({ res, actionGroup: successActions })
+    //
+		// 			processActionGroup({ res, actionGroup: afterActions })
+    //
+		// 		})
+		// 		.catch((error) => {
+    //
+		// 			processActionGroup({ error, actionGroup: failureActions })
+    //
+		// 			processActionGroup({ error, actionGroup: afterActions })
+    //
+		// 		})
+		// }
 	}
 }
