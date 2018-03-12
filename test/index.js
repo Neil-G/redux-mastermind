@@ -3,10 +3,21 @@ const createMastermind = require('./../lib/').createMastermind
 const test = require('tape');
 const tapSpec = require('tap-spec');
 const helpers = require('./../lib/').helpers
+const reselect = require('reselect')
+const createSelector = reselect.createSelector
+
+
 
 // test options
 const options = { test: true }
 
+
+const completedTodosSelector = createSelector(
+	state => helpers.objectToArray(state.data.toJS().todos),
+	todos => todos.filter(todo => todo.complete)
+)
+
+/* HELPER TESTS */
 test('helpers', function(t) {
 
 	const dataObject = {
@@ -41,7 +52,7 @@ test('helpers', function(t) {
 test('todo example: quickstart and built-in functionality', function (t) {
 
     // create mastermind
-	const mastermind = createMastermind({ options })
+	const mastermind = createMastermind({ options, selectors: { completedTodosSelector }})
 
     // check default store state
     t.deepEqual(
@@ -75,6 +86,8 @@ test('todo example: quickstart and built-in functionality', function (t) {
         }
     })
 
+		// console.log('selector test', completedTodosSelector(mastermind.getState()))
+
     t.deepEqual(
         mastermind.getState().data.toJS(),
         { todos: { '1': { title: 'test', complete: false }}},
@@ -100,6 +113,8 @@ test('todo example: quickstart and built-in functionality', function (t) {
         'updateIn works properly'
     )
 
+		// console.log('selector test', completedTodosSelector(mastermind.getState()))
+
     // delete
     mastermind.update('genericStoreUpdate', {
         actions: {
@@ -120,6 +135,8 @@ test('todo example: quickstart and built-in functionality', function (t) {
     t.end()
 });
 
+
+/* CUSTOM USC's */
 test('todo example: custom storeState and updateSchemaCreators', function (t) {
 
     const { initialStoreState, updateSchemaCreators } = testData
