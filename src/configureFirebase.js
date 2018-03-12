@@ -10,6 +10,6 @@ export default (firebaseConfig) => {
 		auth: app.auth(),
 	  firebase: app.database(),
 		firestore: app.firestore(),
-	  storage: app.storage(),
+	  // storage: app.storage(),
 	}
 }
