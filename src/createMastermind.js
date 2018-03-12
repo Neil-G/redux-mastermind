@@ -218,7 +218,7 @@ export default ({ options = {}, initialStoreState = {}, updateSchemaCreators = {
 
 		// creates a mapStateToProps function for connected components
 		// takes an array of strings
-		connectStore: (component, key: Array<string>, shouldReturnAFunction = false) => {
+		connectStore: (component, keys: Array<string>, shouldReturnAFunction = false) => {
 
 			// function that maps store state to component props
 			const mapStateToProps = state => {
@@ -227,7 +227,7 @@ export default ({ options = {}, initialStoreState = {}, updateSchemaCreators = {
 				let mappedState = {}
 
 				// populate return object
-				branches.forEach(key => {
+				keys.forEach(key => {
 
 					// add selector connection
 					if (key.split(':').length === 2 && selectors[key.split(':')[1]]) {
