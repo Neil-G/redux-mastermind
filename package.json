@@ -9,6 +9,7 @@
     "firebase": "^4.10.0",
     "immutable": "^3.8.2",
     "react": "^16.2.0",
+    "react-navigation-redux-helpers": "^1.0.3",
     "react-redux": "^5.0.7",
     "redux": "^3.7.2",
     "redux-logger": "^3.0.6",

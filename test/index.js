@@ -9,7 +9,7 @@ const createSelector = reselect.createSelector
 
 
 // test options
-const options = { test: true }
+const options = { env: 'test' }
 
 
 const completedTodosSelector = createSelector(

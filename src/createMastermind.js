@@ -9,6 +9,10 @@ import defaultUpdateSchemaCreators from './defaultUpdateSchemaCreators'
 import Promise from 'bluebird'
 const uuidv1 = require('uuid/v1')
 import { connect } from 'react-redux'
+import {
+  createReduxBoundAddListener,
+  createReactNavigationReduxMiddleware,
+} from 'react-navigation-redux-helpers';
 
 const {
 	genericStoreUpdate,
@@ -22,7 +26,7 @@ const {
 
 // TODO, add reduxConfig as an option to validate branches
 // TODO validate operations against locations
-export default ({ options = {}, initialStoreState = {}, updateSchemaCreators = {}, firebaseConfig, selectors= {} }) => {
+export default ({ options = {}, initialStoreState = {}, updateSchemaCreators = {}, firebaseConfig, selectors= {}, AppNavigator, initialMobileScreenName = 'Login' }) => {
 
 
 	/*** INITIALIZE AND CHECK ARGUMENTS ***/
@@ -53,12 +57,18 @@ export default ({ options = {}, initialStoreState = {}, updateSchemaCreators = {
 	/*** CREATE STORE ***/
 
 	let store
-	if (options.test == true) {
+
+	/* TESTS */
+	if (options.env == 'test') {
 
 		// for tests
 		store = createStore(combineReducers(configureReducers(initialStoreState)))
 
-	} else if (options.web || options.web == undefined) {
+
+	/* WEB */
+	} else if (options.env == 'web' || !options.env) {
+
+
 		const composeEnhancers =
 		typeof window === 'object' &&
 		window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ ?
@@ -72,13 +82,29 @@ export default ({ options = {}, initialStoreState = {}, updateSchemaCreators = {
 			composeEnhancers(applyMiddleware(logger)),
 		)
 
+	/* MOBILE */
+	} else if (options.env == 'mobile' && AppNavigator) {
 
+		// setup adapted from https://reactnavigation.org/docs/redux-integration.html
+
+		const initialMobileNavState = AppNavigator.router.getStateForAction(AppNavigator.router.getActionForPathAndParams(initialMobileScreenName))
+
+		const navReducer = (state = initialMobileNavState, action) => nextState ? AppNavigator.router.getStateForAction(action, state) : state
+
+		const appReducer = combineReducers(Object.keys({}, configureReducers(initialStoreState), { nav: navReducer }))
+
+		const middleware = createReactNavigationReduxMiddleware( "root", state => state.nav)
+
+		store = createStore(
+			appReducer,
+			applyMiddleware(middleware)
+		)
+		
 	} else {
 
-		// for mobile
 		store = createStore(
 			combineReducers(configureReducers(initialStoreState)),
-			applyMiddleware(logger),
+			composeEnhancers(applyMiddleware(logger)),
 		)
 
 	}
