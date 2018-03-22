@@ -24,6 +24,7 @@ const {
 
 
 
+
 // TODO, add reduxConfig as an option to validate branches
 // TODO validate operations against locations
 export default ({ options = {}, initialStoreState = {}, updateSchemaCreators = {}, firebaseConfig, selectors= {}, AppNavigator, initialMobileScreenName = 'Login' }) => {
@@ -57,6 +58,7 @@ export default ({ options = {}, initialStoreState = {}, updateSchemaCreators = {
 	/*** CREATE STORE ***/
 
 	let store
+  let addListener
 
 	/* TESTS */
 	if (options.env == 'test') {
@@ -89,17 +91,24 @@ export default ({ options = {}, initialStoreState = {}, updateSchemaCreators = {
 
 		const initialMobileNavState = AppNavigator.router.getStateForAction(AppNavigator.router.getActionForPathAndParams(initialMobileScreenName))
 
-		const navReducer = (state = initialMobileNavState, action) => nextState ? AppNavigator.router.getStateForAction(action, state) : state
+		const navReducer = (state = initialMobileNavState, action) => {
+      const nextState = AppNavigator.router.getStateForAction(action, state)
+      return nextState || state
+    }
 
-		const appReducer = combineReducers(Object.keys({}, configureReducers(initialStoreState), { nav: navReducer }))
+    let initialState = Object.assign({}, { nav: navReducer }, configureReducers(initialStoreState))
 
-		const middleware = createReactNavigationReduxMiddleware( "root", state => state.nav)
+		const appReducer = combineReducers(initialState)
+
+		const middleware = createReactNavigationReduxMiddleware("root", state => state.nav)
+
+    addListener = createReduxBoundAddListener("root")
 
 		store = createStore(
 			appReducer,
 			applyMiddleware(middleware)
 		)
-		
+
 	} else {
 
 		store = createStore(
@@ -217,6 +226,8 @@ export default ({ options = {}, initialStoreState = {}, updateSchemaCreators = {
 				return res
 			})
 		},
+
+    addListener,
 
 		// TODO: finish this
 		createDocs: () => Docs({ updateSchemasCreators, actionCreators }),
