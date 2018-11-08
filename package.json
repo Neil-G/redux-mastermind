@@ -13,7 +13,6 @@
     "react-redux": "^5.0.7",
     "redux": "^3.7.2",
     "redux-logger": "^3.0.6",
-    "remap-istanbul": "^0.9.6",
     "reselect": "^3.0.1",
     "uuid": "^3.2.1"
   },
@@ -36,8 +35,7 @@
     "pretest": "npm run build -- --source-maps='inline'",
     "build": "babel ./src -d ./lib",
     "watch": "npm run build -- -w",
-    "flow": "flow",
-    "cover-src": "npm test && remap-istanbul -i coverage/coverage.json -o coverage/html-report -t html"
+    "flow": "flow"
   },
   "repository": {
     "type": "git",
