@@ -9,10 +9,6 @@ import defaultUpdateSchemaCreators from './defaultUpdateSchemaCreators'
 import Promise from 'bluebird'
 const uuidv1 = require('uuid/v1')
 import { connect } from 'react-redux'
-import {
-  createReduxBoundAddListener,
-  createReactNavigationReduxMiddleware,
-} from 'react-navigation-redux-helpers';
 
 const {
 	genericStoreUpdate,
@@ -82,31 +78,6 @@ export default ({ options = {}, initialStoreState = {}, updateSchemaCreators = {
 		store = createStore(
 			combineReducers(configureReducers(initialStoreState)),
 			composeEnhancers(applyMiddleware(logger)),
-		)
-
-	/* MOBILE */
-	} else if (options.env == 'mobile' && AppNavigator) {
-
-		// setup adapted from https://reactnavigation.org/docs/redux-integration.html
-
-		const initialMobileNavState = AppNavigator.router.getStateForAction(AppNavigator.router.getActionForPathAndParams(initialMobileScreenName))
-
-		const navReducer = (state = initialMobileNavState, action) => {
-      const nextState = AppNavigator.router.getStateForAction(action, state)
-      return nextState || state
-    }
-
-    let initialState = Object.assign({}, { nav: navReducer }, configureReducers(initialStoreState))
-
-		const appReducer = combineReducers(initialState)
-
-		const middleware = createReactNavigationReduxMiddleware("root", state => state.nav)
-
-    addListener = createReduxBoundAddListener("root")
-
-		store = createStore(
-			appReducer,
-			applyMiddleware(middleware)
 		)
 
 	} else {

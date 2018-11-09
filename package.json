@@ -9,11 +9,9 @@
     "firebase": "^4.10.0",
     "immutable": "^3.8.2",
     "react": "^16.2.0",
-    "react-navigation-redux-helpers": "^1.0.3",
     "react-redux": "^5.0.7",
     "redux": "^3.7.2",
     "redux-logger": "^3.0.6",
-    "remap-istanbul": "^0.9.6",
     "reselect": "^3.0.1",
     "uuid": "^3.2.1"
   },
@@ -32,12 +30,11 @@
     "tape": "^4.9.0"
   },
   "scripts": {
-    "test": "istanbul cover tape -r ./test/helper.js ./test/index.js | tap-spec ",
+    "test": "tape -r ./test/helper.js ./test/index.js | tap-spec ",
     "pretest": "npm run build -- --source-maps='inline'",
     "build": "babel ./src -d ./lib",
     "watch": "npm run build -- -w",
-    "flow": "flow",
-    "cover-src": "npm test && remap-istanbul -i coverage/coverage.json -o coverage/html-report -t html"
+    "flow": "flow"
   },
   "repository": {
     "type": "git",
